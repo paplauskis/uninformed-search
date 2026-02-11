@@ -3,9 +3,9 @@ package main
 import "fmt"
 
 func main() {
-	randomGraph := NewRandomGraph()
+	graph := NewRandomGraph()
 
-	for i, list := range randomGraph.AdjacencyList {
+	for i, list := range graph.AdjacencyList {
 		fmt.Printf("%d -> { ", i)
 
 		if len(list) == 0 {
@@ -21,4 +21,7 @@ func main() {
 
 		fmt.Println(" }")
 	}
+
+	vertices := BreadthFirstSearch(*graph, 0, 5)
+	fmt.Println(vertices)
 }
