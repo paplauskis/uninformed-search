@@ -1,5 +1,7 @@
 package main
 
+import "errors"
+
 type Node struct {
 	Data int
 	Next *Node
@@ -19,7 +21,7 @@ func NewQueue() *Queue {
 	}
 }
 
-func (n *Queue) Add(data int) {
+func (n *Queue) Enqueue(data int) {
 	temp := &Node{
 		Data: data,
 		Next: nil,
@@ -36,15 +38,18 @@ func (n *Queue) Add(data int) {
 	n.Size++
 }
 
-func (n *Queue) Pop() {
+func (n *Queue) Dequeue() (int, error) {
 	if n.Start == nil {
-		return
+		panic(errors.New("Queue is empty"))
 	}
 
+	dequeuedNode := n.Start
 	n.Start = n.Start.Next
 	n.Size--
 
 	if n.Start == nil {
 		n.Tail = nil
 	}
+
+	return dequeuedNode.Data, nil
 }
