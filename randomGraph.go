@@ -4,7 +4,7 @@ import (
 	"math/rand"
 )
 
-type RandomGraph struct {
+type Graph struct {
 	Vertices      int
 	Edges         int
 	AdjacencyList [][]int
@@ -12,7 +12,7 @@ type RandomGraph struct {
 
 const MAX_LIMIT = 30
 
-func NewRandomGraph() *RandomGraph {
+func NewRandomGraph() *Graph {
 
 	vertices := 6 // rand.Intn(MAX_LIMIT) + 1
 	maxEdges := computeMaxEdges(vertices)
@@ -23,7 +23,7 @@ func NewRandomGraph() *RandomGraph {
 		adjList[i] = make([]int, 0)
 	}
 
-	graph := &RandomGraph{
+	graph := &Graph{
 		Vertices:      vertices,
 		Edges:         edges,
 		AdjacencyList: adjList,
@@ -50,16 +50,20 @@ func NewRandomGraph() *RandomGraph {
 	return graph
 }
 
+func (g *Graph) GetNeighbors(vertex int) []int {
+	return g.AdjacencyList[vertex]
+}
+
 func computeMaxEdges(numOfVertices int) int {
 	return numOfVertices * (numOfVertices - 1) / 2
 }
 
-func (g *RandomGraph) addEdge(v, w int) {
+func (g *Graph) addEdge(v, w int) {
 	g.AdjacencyList[v] = append(g.AdjacencyList[v], w)
 	g.AdjacencyList[w] = append(g.AdjacencyList[w], v)
 }
 
-func (g *RandomGraph) hasEdge(v, w int) bool {
+func (g *Graph) hasEdge(v, w int) bool {
 	for _, x := range g.AdjacencyList[v] {
 		if x == w {
 			return true
