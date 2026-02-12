@@ -8,13 +8,11 @@ const NoParent = -1
 
 func BreadthFirstSearch(graph Graph, startNode int, endNode int) []int {
 	if startNode < 0 ||
-		endNode < 0 ||
-		startNode >= endNode ||
-		endNode > graph.Vertices {
+		endNode < 0 {
 		return nil
 	}
 
-	parents := solve(graph, startNode)
+	parents := solve(graph, startNode, endNode)
 
 	if len(graph.GetNeighbors(startNode)) == 0 {
 		panic(errors.New("starting vertex doesn't have any neighbors"))
@@ -23,7 +21,7 @@ func BreadthFirstSearch(graph Graph, startNode int, endNode int) []int {
 	return reconstructPath(parents, startNode, endNode)
 }
 
-func solve(graph Graph, startNode int) []int {
+func solve(graph Graph, startNode, endNode int) []int {
 	graphSize := graph.Vertices
 	visited := make([]bool, graphSize)
 	//stores parents, f.e. if vertex 0 is the starting point and it goes to vertex 3,
@@ -54,12 +52,18 @@ func solve(graph Graph, startNode int) []int {
 			queue.Enqueue(x)
 			visited[x] = true
 			prnts[x] = node
+
+			if x == endNode {
+				return prnts
+			}
 		}
 	}
 }
 
 // reconstructs path from vertex's parents (latest search)
+//
 //	0  1  2  3  4  5  (array indexes)
+//
 // [-1, 0, 0, 1, 0, 3] (array values, -1 is root vertex)
 // if path needs to be found from vertex 0 to vertex 3, then returned array
 // will be [0, 1, 3] as a graph it will look like 0 -> 1 -> 3
