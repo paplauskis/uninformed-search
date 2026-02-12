@@ -1,8 +1,6 @@
 package main
 
-import (
-	"errors"
-)
+import "errors"
 
 const NoParent = -1
 
@@ -12,16 +10,16 @@ func BreadthFirstSearch(graph Graph, startNode int, endNode int) []int {
 		return nil
 	}
 
-	parents := solve(graph, startNode, endNode)
-
 	if len(graph.GetNeighbors(startNode)) == 0 {
 		panic(errors.New("starting vertex doesn't have any neighbors"))
 	}
 
-	return reconstructPath(parents, startNode, endNode)
+	path := solveBFS(graph, startNode, endNode)
+
+	return reconstructPath(path, startNode, endNode)
 }
 
-func solve(graph Graph, startNode, endNode int) []int {
+func solveBFS(graph Graph, startNode, endNode int) []int {
 	graphSize := graph.Vertices
 	visited := make([]bool, graphSize)
 	//stores parents, f.e. if vertex 0 is the starting point and it goes to vertex 3,
