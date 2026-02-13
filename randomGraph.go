@@ -14,7 +14,7 @@ const MAX_LIMIT = 30
 
 func NewRandomGraph() *Graph {
 
-	vertices := 6 // rand.Intn(MAX_LIMIT) + 1
+	vertices := 1000 // rand.Intn(MAX_LIMIT) + 1
 	maxEdges := computeMaxEdges(vertices)
 	edges := rand.Intn(maxEdges) + 1
 
