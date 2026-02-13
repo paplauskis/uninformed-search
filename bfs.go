@@ -4,28 +4,30 @@ import "errors"
 
 const NoParent = -1
 
-func BreadthFirstSearch(graph Graph, startNode int, endNode int) []int {
+func BreadthFirstSearch(graph Graph, startNode int, endNode int) ([]int, []int) {
 	if startNode < 0 ||
 		endNode < 0 {
-		return nil
+		return nil, nil
 	}
 
 	if len(graph.GetNeighbors(startNode)) == 0 {
 		panic(errors.New("starting vertex doesn't have any neighbors"))
 	}
 
-	path := solveBFS(graph, startNode, endNode)
+	path, history := solveBFS(graph, startNode, endNode)
 
-	return reconstructPath(path, startNode, endNode)
+	return reconstructPath(path, startNode, endNode), history
 }
 
-func solveBFS(graph Graph, startNode, endNode int) []int {
+func solveBFS(graph Graph, startNode, endNode int) ([]int, []int) {
 	graphSize := graph.Vertices
 	visited := make([]bool, graphSize)
+
 	//stores parents, f.e. if vertex 0 is the starting point and it goes to vertex 3,
 	//vertex 3's parent is 0, if vertex 3 has a child vertex 5 (for example),
 	//then vertex 5's parent is 3 and so on....
 	prnts := make([]int, graphSize)
+	history := []int{0}
 
 	for i := range graphSize {
 		prnts[i] = NoParent
@@ -37,7 +39,7 @@ func solveBFS(graph Graph, startNode, endNode int) []int {
 
 	for {
 		if queue.Size == 0 {
-			return prnts
+			return prnts, history
 		}
 		node, _ := queue.Dequeue()
 		neighbors := graph.AdjacencyList[node]
@@ -50,9 +52,10 @@ func solveBFS(graph Graph, startNode, endNode int) []int {
 			queue.Enqueue(x)
 			visited[x] = true
 			prnts[x] = node
+			history = append(history, x)
 
 			if x == endNode {
-				return prnts
+				return prnts, history
 			}
 		}
 	}
