@@ -2,16 +2,17 @@ package main
 
 import (
 	"fmt"
+	"slices"
 	"time"
 )
 
 func main() {
 	const iterations = 10000
-	const graphC0unt = 10
-	bfsElapsedArr := make([]time.Duration, graphC0unt)
-	dfsElapsedArr := make([]time.Duration, graphC0unt)
+	const graphCount = 100
+	bfsElapsedArr := make([]int64, graphCount)
+	dfsElapsedArr := make([]int64, graphCount)
 
-	for i := 0; i < graphC0unt; i++ {
+	for i := 0; i < graphCount; i++ {
 		graph := NewRandomGraph()
 
 		start := time.Now()
@@ -19,20 +20,35 @@ func main() {
 			BreadthFirstSearch(*graph, 0, 5)
 		}
 		bfsElapsed := time.Since(start)
-		bfsElapsedArr[i] = bfsElapsed
+		bfsElapsedArr[i] = bfsElapsed.Milliseconds()
 
 		start = time.Now()
 		for i := 0; i < iterations; i++ {
 			DepthFirstSearch(*graph, 0, 5)
 		}
 		dfsElapsed := time.Since(start)
-		dfsElapsedArr[i] = dfsElapsed
+		dfsElapsedArr[i] = dfsElapsed.Milliseconds()
 	}
 
 	fmt.Println("BFS elapsed array:", bfsElapsedArr)
 	fmt.Println("DFS elapsed array:", dfsElapsedArr)
 
-	//todo add analyser for results - avg, median...
+	bfsStats := &Stats{
+		Average: calcAverage(bfsElapsedArr),
+		Median:  calcMedian(bfsElapsedArr),
+		Min:     slices.Min(bfsElapsedArr),
+		Max:     slices.Max(bfsElapsedArr),
+	}
+
+	dfsStats := &Stats{
+		Average: calcAverage(dfsElapsedArr),
+		Median:  calcMedian(dfsElapsedArr),
+		Min:     slices.Min(dfsElapsedArr),
+		Max:     slices.Max(dfsElapsedArr),
+	}
+
+	fmt.Printf("BFS times in ms: avg - %f, median - %f, min - %d, max - %d\n", bfsStats.Average, bfsStats.Median, bfsStats.Min, bfsStats.Max)
+	fmt.Printf("DFS times in ms: avg - %f, median - %f, min - %d, max - %d\n", dfsStats.Average, dfsStats.Median, dfsStats.Min, dfsStats.Max)
 }
 
 func printGraph(graph Graph) {
