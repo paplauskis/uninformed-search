@@ -5,42 +5,37 @@ import (
 )
 
 func DepthFirstSearch(graph Graph, startNode, endNode int) []int {
-	//graphSize := graph.Vertices
 	visited := make([]bool, graph.Vertices)
-	prnts := make([]int, 0)
-
-	//for i := range graphSize {
-	//	prnts[i] = NoParent
-	//}
+	history := make([]int, 0)
 
 	if len(graph.GetNeighbors(startNode)) == 0 {
 		panic(errors.New("starting vertex doesn't have any neighbors"))
 	}
 
-	path, _ := solveDFS(graph, startNode, endNode, visited, prnts)
+	path, _ := solveDFS(graph, startNode, endNode, visited, history)
 
-	return path //reconstructPath(path, startNode, endNode)
+	return path
 }
 
-func solveDFS(graph Graph, currNode, endNode int, visited []bool, path []int) ([]int, bool) {
+func solveDFS(graph Graph, currNode, endNode int, visited []bool, history []int) ([]int, bool) {
 	if visited[currNode] {
-		return path, false
+		return history, false
 	}
 
-	path = append(path, currNode)
+	history = append(history, currNode)
 	visited[currNode] = true
 
 	if currNode == endNode {
-		return path, true
+		return history, true
 	}
 
 	for _, n := range graph.GetNeighbors(currNode) {
 		var endNodeFound bool
-		path, endNodeFound = solveDFS(graph, n, endNode, visited, path)
+		history, endNodeFound = solveDFS(graph, n, endNode, visited, history)
 		if endNodeFound {
-			return path, true
+			return history, true
 		}
 	}
 
-	return path, false
+	return history, false
 }
